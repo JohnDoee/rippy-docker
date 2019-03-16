@@ -1,0 +1,63 @@
+version: '3.6'
+
+services:
+  redis:
+    image: redis
+    networks:
+      - rippy
+  vnc:
+    image: johndoee/rippy-vnc:latest
+    networks:
+      - rippy
+    environment:
+      - USER=rippy
+      - RESOLUTION=1024x768
+    volumes:
+      - userdata:/home/rippy/.config/chromium
+  web:
+    image: johndoee/rippy:latest
+    networks:
+      - rippy
+    volumes:
+      - static:/static
+      - /tmp/media:/media
+      - conf:/conf
+    depends_on:
+      - redis
+    environment:
+      - STATIC_ROOT=/static
+      - MEDIA_ROOT=/media
+      - CELERY_RESULT_BACKEND=redis://redis:6379/0
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - CHROME_REMOTE_URL=http://vnc:7201/json/version
+      - CHANNELS_URL=redis://redis:6379/0
+      - DATABASE_URL=sqlite:////conf/db.sqlite3
+      - PARSE_BROWSER_URL=/vnc/
+      - SECRET_KEY=a-secret-key-replace
+      - RIPPY_CONCURRENCY=2
+  webapp:
+    image: johndoee/rippy-webapp:latest
+    networks:
+      - rippy
+    depends_on:
+      - web
+      - vnc
+    volumes:
+      - static:/static
+      - /tmp/media:/media
+    environment:
+      - RIPPY_DJANGO_HOST=web:8000
+      - RIPPY_VNC_HOST=vnc:80
+      - BASIC_AUTH_USERNAME=username
+      - BASIC_AUTH_PASSWORD=FVjMM77LJU6XQup5Eu
+    ports:
+      - "51359:80"
+
+networks:
+  rippy:
+
+volumes:
+  static:
+  conf:
+  media:
+  userdata:
