@@ -14,6 +14,7 @@ services:
       - RESOLUTION=1024x768
     volumes:
       - userdata:/home/rippy/.config/chromium
+    shm_size: 2g
   web:
     image: johndoee/rippy:latest
     networks:
@@ -35,6 +36,7 @@ services:
       - PARSE_BROWSER_URL=/vnc/
       - SECRET_KEY=a-secret-key-replace
       - RIPPY_CONCURRENCY=2
+      - RIPPY_DOWNLOAD_CONCURRENCY=6
   webapp:
     image: johndoee/rippy-webapp:latest
     networks:
