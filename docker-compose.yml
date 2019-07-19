@@ -6,7 +6,7 @@ services:
     networks:
       - rippy
   vnc:
-    image: johndoee/rippy-vnc:latest
+    image: johndoee/rippy-vnc:0.1.0
     networks:
       - rippy
     environment:
@@ -16,7 +16,7 @@ services:
       - userdata:/home/rippy/.config/chromium
     shm_size: 2g
   web:
-    image: johndoee/rippy:latest
+    image: johndoee/rippy:0.1.3
     networks:
       - rippy
     volumes:
@@ -38,7 +38,7 @@ services:
       - RIPPY_CONCURRENCY=2
       - RIPPY_DOWNLOAD_CONCURRENCY=6
   webapp:
-    image: johndoee/rippy-webapp:latest
+    image: johndoee/rippy-webapp:0.1.1
     networks:
       - rippy
     depends_on:
