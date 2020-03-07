@@ -1,0 +1,26 @@
+internal: 127.0.0.1 port = 8081
+external: eth0
+clientmethod: none
+socksmethod: none
+
+user.privileged: root
+user.unprivileged : nobody
+
+client pass {
+    from: 0.0.0.0/0 to: 0.0.0.0/0
+    log: connect disconnect error
+    pam.servicename: sockd
+}
+
+socks pass {
+    from: 0.0.0.0/0 to: 0.0.0.0/0
+    log: connect disconnect error
+}
+
+route {
+    from: 0.0.0.0/0 to: 0.0.0.0/0 via: 172.26.0.2 port = 35463
+    proxyprotocol: socks_v4 socks_v5
+	command: connect
+	protocol: tcp #udp not supported
+    method: none
+}
